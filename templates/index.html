@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SmartResearch Engine</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<!-- ── HEADER ───────────────────────────────────────────────────────── -->
+<header class="header">
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-mark">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.4"/>
+          <circle cx="8" cy="8" r="3" fill="currentColor"/>
+        </svg>
+      </div>
+      <span class="logo-text">SmartResearch</span>
+      <span class="logo-divider"></span>
+      <span class="logo-sub">Engine</span>
+    </div>
+    <nav class="nav">
+      <a href="#search" class="nav-link active">Search</a>
+      <a href="#upload" class="nav-link">Upload PDF</a>
+      <a href="#about"  class="nav-link">About</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ── HERO ─────────────────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="hero-bg">
+    <div class="hero-gradient"></div>
+    <div class="hero-grid-overlay"></div>
+  </div>
+  <div class="hero-inner">
+    <div class="hero-label">
+      <span class="hero-label-dot"></span>
+      Scholar`s Own Discovery System
+    </div>
+    <h1 class="hero-title">Find What<br><em>Others Missed</em></h1>
+    <p class="hero-sub">Retrieve, analyse, and summarise academic papers — then identify unexplored research opportunities in seconds.</p>
+    <div class="hero-stats">
+      <div class="stat">
+        <span class="stat-n">3</span>
+        <span class="stat-l">Free APIs</span>
+      </div>
+      <div class="stat-sep"></div>
+      <div class="stat">
+        <span class="stat-n">&#8734;</span>
+        <span class="stat-l">Papers</span>
+      </div>
+      <div class="stat-sep"></div>
+      <div class="stat">
+        <span class="stat-n">Fast</span>
+        <span class="stat-l">Results</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── MAIN ──────────────────────────────────────────────────────────── -->
+<main class="main">
+
+  <!-- ══ PANEL 01 — SEARCH ═════════════════════════════════════════════ -->
+  <section id="search" class="panel">
+    <div class="panel-header">
+      <span class="panel-num">01</span>
+      <div>
+        <h2 class="panel-title">Search Research Topic</h2>
+        <p class="panel-sub">Enter any academic topic to retrieve and analyse papers from Semantic Scholar &amp; arXiv</p>
+      </div>
+    </div>
+    <div class="search-box">
+      <div class="search-input-wrap">
+        <span class="search-icon">
+          <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+            <circle cx="6" cy="6" r="4.5" stroke="currentColor" stroke-width="1.4"/>
+            <path d="M9.5 9.5L13 13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <input type="text" id="topicInput" class="search-input"
+               placeholder="e.g. deep learning for medical image segmentation..."
+               autocomplete="off">
+      </div>
+      <div class="search-controls">
+        <div class="slider-wrap">
+          <label>Max Papers: <span id="paperCount">10</span></label>
+          <input type="range" id="paperSlider" min="5" max="25" value="10" class="slider">
+        </div>
+        <button class="btn-primary" id="searchBtn" onclick="startSearch()">
+          <span class="btn-icon">&#9654;</span> Analyse
+        </button>
+      </div>
+      <div class="quick-topics">
+        <span class="quick-label">Try:</span>
+        <button class="chip" onclick="quickSearch('federated learning privacy')">Federated Learning</button>
+        <button class="chip" onclick="quickSearch('transformer attention mechanism NLP')">Transformers</button>
+        <button class="chip" onclick="quickSearch('graph neural networks')">Graph Neural Networks</button>
+        <button class="chip" onclick="quickSearch('reinforcement learning robotics')">RL Robotics</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ PANEL 02 — UPLOAD ═════════════════════════════════════════════ -->
+  <section id="upload" class="panel">
+    <div class="panel-header">
+      <span class="panel-num">02</span>
+      <div>
+        <h2 class="panel-title">Analyse Your Paper</h2>
+        <p class="panel-sub">Upload a PDF — get a clear, ordered summary of exactly what the paper covers</p>
+      </div>
+    </div>
+    <div class="upload-zone" id="uploadZone"
+         ondragover="handleDragOver(event)"
+         ondrop="handleDrop(event)"
+         onclick="document.getElementById('pdfInput').click()">
+      <div class="upload-icon">&#8679;</div>
+      <p class="upload-text">Drop your PDF here or click to browse</p>
+      <p class="upload-hint">Supports academic papers, research articles, thesis documents &middot; max 16 MB</p>
+      <input type="file" id="pdfInput" accept=".pdf" style="display:none" onchange="uploadPDF(event)">
+    </div>
+    <div class="file-strip hidden" id="fileStrip">
+      <span class="file-strip-icon">&#128196;</span>
+      <div class="file-strip-meta">
+        <span id="fileName" class="file-name"></span>
+        <span id="fileSize" class="file-size"></span>
+      </div>
+      <button class="btn-outline sm" onclick="clearUpload()">&#10005; Clear</button>
+    </div>
+  </section>
+
+  <!-- ══ RESULTS — SEARCH ══════════════════════════════════════════════ -->
+  <section id="results" class="results hidden">
+    <div id="loadingState" class="loading-state hidden">
+      <div class="loading-ring"></div>
+      <div class="loading-steps" id="loadingSteps"></div>
+    </div>
+    <div id="resultsContent" class="hidden">
+      <div class="metrics-row" id="metricsRow"></div>
+      <div class="results-grid">
+        <div class="col-papers">
+          <div class="col-header">
+            <h3>Papers Found</h3>
+            <div class="filter-row">
+              <input type="text" id="paperFilter" class="filter-input"
+                     placeholder="Filter papers..." onkeyup="filterPapers()">
+              <select id="sortBy" class="filter-select" onchange="sortPapers()">
+                <option value="relevance">Relevance</option>
+                <option value="year">Year</option>
+                <option value="citations">Citations</option>
+              </select>
+            </div>
+          </div>
+          <div id="papersList" class="papers-list"></div>
+        </div>
+        <div class="col-insights">
+          <div class="insight-card" id="topicsCard">
+            <div class="ic-header"><span class="ic-icon">&#9672;</span><h3>Key Topics</h3></div>
+            <div id="topicsChart" class="topics-chart"></div>
+          </div>
+          <div class="insight-card" id="yearCard">
+            <div class="ic-header"><span class="ic-icon">&#9719;</span><h3>Publication Timeline</h3></div>
+            <div id="yearChart" class="year-chart"></div>
+          </div>
+          <div class="insight-card gaps-card" id="gapsCard">
+            <div class="ic-header"><span class="ic-icon">&#9673;</span><h3>Research Gaps</h3></div>
+            <div id="gapsList" class="gaps-list"></div>
+          </div>
+        </div>
+      </div>
+      <div class="report-section" id="reportSection">
+        <div class="report-header">
+          <h3>Full Research Report</h3>
+          <div class="report-actions">
+            <button class="btn-outline" onclick="generateReport()">Generate Report</button>
+            <button class="btn-outline" id="downloadBtn" onclick="downloadReport()" style="display:none">&#8595; Download .md</button>
+            <button class="btn-outline" onclick="copyReport()">Copy</button>
+          </div>
+        </div>
+        <div id="reportContent" class="report-content">
+          <div class="report-placeholder">Click "Generate Report" to create a full research summary</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ RESULTS — PDF ═════════════════════════════════════════════════ -->
+  <section id="pdfResults" class="results hidden">
+    <div id="pdfLoadingState" class="loading-state hidden">
+      <div class="loading-ring"></div>
+      <div class="loading-steps" id="pdfLoadingSteps"></div>
+    </div>
+    <div id="pdfContent" class="hidden">
+      <div class="pdf-paper-header">
+        <div class="pdf-paper-icon">&#128196;</div>
+        <div class="pdf-paper-meta">
+          <h2 id="pdfTitle">Paper Analysis</h2>
+          <p  id="pdfMeta"></p>
+          <div id="pdfSections" class="sections-list"></div>
+        </div>
+      </div>
+      <div class="pdf-tab-bar">
+         <button class="pdf-tab active" data-tab="abstraction">What this paper is about</button>
+       </div>
+      <div id="tab-overview" class="tab-panel active">
+        <div class="tab-intro">A quick snapshot: key findings and paper statistics.</div>
+        <div id="overviewStats" class="overview-stats"></div>
+        <div class="insight-card" style="margin-top:1.25rem">
+          <div class="ic-header"><span class="ic-icon">&#9678;</span><h3>Key Findings</h3></div>
+          <div id="pdfFindings" class="findings-list"></div>
+        </div>
+      </div>
+      <div id="tab-abstraction" class="tab-panel">
+        <div id="abstractionBlocks" class="abstraction-grid"></div>
+      </div>
+      <div id="tab-introduction" class="tab-panel">
+        <div class="section-card">
+          <div class="section-card-label">Introduction</div>
+          <div id="sec-introduction" class="section-card-body"></div>
+        </div>
+      </div>
+      <div id="tab-body" class="tab-panel">
+        <div id="bodySections"></div>
+      </div>
+      <div id="tab-conclusion" class="tab-panel">
+        <div class="section-card">
+          <div class="section-card-label">Conclusion &amp; Future Work</div>
+          <div id="sec-conclusion" class="section-card-body"></div>
+        </div>
+      </div>
+      <div id="tab-topics" class="tab-panel">
+        <div class="results-grid">
+          <div class="col-papers">
+            <div class="insight-card">
+              <div class="ic-header"><span class="ic-icon">&#9673;</span><h3>Topics Covered</h3></div>
+              <div id="pdfKeywords" class="keywords-cloud"></div>
+            </div>
+          </div>
+          <div class="col-insights">
+            <div class="insight-card gaps-card">
+              <div class="ic-header"><span class="ic-icon">&#9676;</span><h3>Gaps &amp; Future Work</h3></div>
+              <div id="pdfGaps"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ── ABOUT ─────────────────────────────────────────────────────────── -->
+<section id="about" class="about-section">
+  <div class="about-inner">
+    <div class="about-heading">
+      <span class="about-eyebrow">About the Project</span>
+      <h2>Built for Researchers,<br>by Researchers</h2>
+      <p>SmartResearch Engine simplifies the early stages of academic research. Retrieve, analyse, and summarise papers — then identify unexplored opportunities. Full transparency, full control.</p>
+    </div>
+    <div class="api-grid">
+      <div class="api-card">
+        <div class="api-badge free">FREE</div>
+        <h4>Semantic Scholar</h4>
+        <p>200M+ papers. No API key needed. 100 req / 5 min.</p>
+        <a href="https://api.semanticscholar.org" target="_blank" class="api-link">api.semanticscholar.org &#8594;</a>
+      </div>
+      <div class="api-card">
+        <div class="api-badge free">FREE</div>
+        <h4>arXiv API</h4>
+        <p>2M+ preprints. No registration. Completely open.</p>
+        <a href="https://arxiv.org/help/api" target="_blank" class="api-link">arxiv.org/help/api &#8594;</a>
+      </div>
+      <div class="api-card">
+        <div class="api-badge free">FREE</div>
+        <h4>OpenAlex</h4>
+        <p>250M+ works. Free with email. 100K req / day.</p>
+        <a href="https://openalex.org" target="_blank" class="api-link">openalex.org &#8594;</a>
+      </div>
+      <div class="api-card">
+        <div class="api-badge key">API KEY</div>
+        <h4>HuggingFace</h4>
+        <p>BART summarisation. Free tier: 30K tokens / month.</p>
+        <a href="https://huggingface.co/settings/tokens" target="_blank" class="api-link">Get free key &#8594;</a>
+      </div>
+    </div>
+    <div class="team">
+      <p class="team-label">Project Team</p>
+      <div class="team-members">
+        <div class="member">Malak Naimi </div>
+        <div class="member">Riham Halaika </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── MODAL ─────────────────────────────────────────────────────────── -->
+<div id="paperModal" class="modal hidden">
+  <div class="modal-backdrop" onclick="closeModal()"></div>
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()">&#10005;</button>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
+<!-- ── TOAST ─────────────────────────────────────────────────────────── -->
+<div id="toast" class="toast hidden"></div>
+
+<script src="/static/js/app.js"></script>
+</body>
+</html>
