@@ -1,6 +1,7 @@
+ 
 # SmartResearch Engine 🔬
 **AI-Powered Academic Paper Analysis**
-*By Malak Naimi (202210733) & Riham Halaika (202211632)*
+*By Riham Halaika*
 
 ---
 
@@ -10,7 +11,7 @@
 SmartResearch/
 ├── app.py                  # Flask web server & API routes
 ├── research_engine.py      # All AI/analysis logic
-├── config.py               # API keys configuration
+├── config.py               # API configuration
 ├── requirements.txt        # Python dependencies
 ├── templates/
 │   └── index.html          # Main UI
@@ -34,21 +35,22 @@ cd SmartResearch
 pip install -r requirements.txt
 ```
 
-### 3. Configure API keys in `config.py`
-
-| API               | Cost   | Key Required | Get It                                         |
-|-------------------|--------|-------------|------------------------------------------------|
-| Semantic Scholar  | FREE   | No          | Automatic                                      |
-| arXiv             | FREE   | No          | Automatic                                      |
-| OpenAlex          | FREE   | No (add email) | Just add your email in config.py            |
-| HuggingFace       | FREE   | Yes (optional) | https://huggingface.co/settings/tokens      |
-
-Open `config.py` and fill in:
-```python
-HUGGINGFACE_API_KEY = "hf_your_key_here"
-OPENALEX_EMAIL      = "your@email.com"
+### 3. Set up your API keys
+Create a `.env` file in the project root:
 ```
-> HuggingFace is optional — the app uses a basic extractive summarizer if no key is set.
+HUGGINGFACE_API_KEY=hf_your_key_here
+OPENALEX_EMAIL=your@email.com
+```
+
+| API               | Cost   | Key Required   | Get It                                 |
+|-------------------|--------|----------------|----------------------------------------|
+| Semantic Scholar  | FREE   | No             | Automatic                              |
+| arXiv             | FREE   | No             | Automatic                              |
+| OpenAlex          | FREE   | No (add email) | Just add your email in `.env`          |
+| HuggingFace       | FREE   | Yes (optional) | https://huggingface.co/settings/tokens |
+
+> ⚠️ Never share your `.env` file — it contains your private API key.
+> HuggingFace is optional — the app falls back to extractive summarization if no key is set.
 
 ### 4. Run
 ```bash
@@ -89,12 +91,12 @@ Upload any academic PDF and get:
 
 ## APIs Used
 
-| API               | Endpoint                                      | Limit                        |
-|-------------------|-----------------------------------------------|------------------------------|
-| Semantic Scholar  | https://api.semanticscholar.org/graph/v1/     | 100 req / 5 min              |
-| arXiv             | http://export.arxiv.org/api/                  | No strict limit              |
-| OpenAlex          | https://api.openalex.org/                     | 100 000 req / day (with email) |
-| HuggingFace BART  | https://api-inference.huggingface.co/         | ~30 000 tokens / month (free) |
+| API               | Endpoint                                      | Limit                          |
+|-------------------|-----------------------------------------------|--------------------------------|
+| Semantic Scholar  | https://api.semanticscholar.org/graph/v1/     | 100 req / 5 min                |
+| arXiv             | http://export.arxiv.org/api/                  | No strict limit                |
+| OpenAlex          | https://api.openalex.org/                     | 100,000 req / day (with email) |
+| HuggingFace BART  | https://api-inference.huggingface.co/         | ~30,000 tokens / month (free)  |
 
 ---
 
@@ -110,5 +112,6 @@ Upload any academic PDF and get:
 - Password-protected PDFs are not supported
 
 **Summarization not working?**
-- Add a HuggingFace API key to `config.py`
+- Add a HuggingFace API key to your `.env` file
 - Without it the app falls back to extractive summarization (still works fine)
+```
